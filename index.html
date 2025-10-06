@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de Gastos Familiares</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --md-sys-color-primary: #6750A4;
+            --md-sys-color-on-primary: #FFFFFF;
+            --md-sys-color-primary-container: #EADDFF;
+            --md-sys-color-on-primary-container: #21005D;
+            --md-sys-color-surface: #FEF7FF;
+            --md-sys-color-on-surface: #1D1B20;
+            --md-sys-color-surface-variant: #E7E0EC;
+            --md-sys-color-on-surface-variant: #49454F;
+            --md-sys-color-outline: #79747E;
+            --md-sys-color-error: #BA1A1A;
+            --md-sys-color-tertiary: #7D5260;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--md-sys-color-surface);
+            color: var(--md-sys-color-on-surface);
+            padding: 16px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 32px;
+            padding-top: 24px;
+        }
+
+        .header h1 {
+            font-size: 32px;
+            font-weight: 400;
+            color: var(--md-sys-color-on-surface);
+        }
+
+        .tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 24px;
+            border-bottom: 1px solid var(--md-sys-color-outline);
+        }
+
+        .tab {
+            padding: 12px 24px;
+            background: none;
+            border: none;
+            border-bottom: 2px solid transparent;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--md-sys-color-on-surface-variant);
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        .tab.active {
+            color: var(--md-sys-color-primary);
+            border-bottom-color: var(--md-sys-color-primary);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+            margin-bottom: 16px;
+        }
+
+        .form-field {
+            margin-bottom: 24px;
+        }
+
+        .form-field label {
+            display: block;
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--md-sys-color-on-surface-variant);
+            margin-bottom: 8px;
+            letter-spacing: 0.5px;
+        }
+
+        .text-field, .select-field {
+            width: 100%;
+            padding: 16px;
+            border: 1px solid var(--md-sys-color-outline);
+            border-radius: 4px;
+            font-size: 16px;
+            font-family: 'Roboto', sans-serif;
+            background: var(--md-sys-color-surface);
+            color: var(--md-sys-color-on-surface);
+            transition: all 0.2s;
+        }
+
+        .select-field {
+            cursor: pointer;
+        }
+
+        .text-field:focus, .select-field:focus {
+            outline: none;
+            border-color: var(--md-sys-color-primary);
+            border-width: 2px;
+            padding: 15px;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 32px;
+        }
+
+        .button {
+            flex: 1;
+            padding: 16px 24px;
+            border: none;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            font-family: 'Roboto', sans-serif;
+            cursor: pointer;
+            transition: all 0.2s;
+            letter-spacing: 0.1px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .button-primary {
+            background-color: var(--md-sys-color-primary);
+            color: var(--md-sys-color-on-primary);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+        }
+
+        .button-primary:hover {
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            transform: translateY(-1px);
+        }
+
+        .button-secondary {
+            background-color: var(--md-sys-color-surface-variant);
+            color: var(--md-sys-color-on-surface-variant);
+        }
+
+        .button-secondary:hover {
+            background-color: #DDD6E4;
+        }
+
+        .filters {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .filter-field {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .filter-field label {
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--md-sys-color-on-surface-variant);
+        }
+
+        .expense-item {
+            background: white;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 8px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 12px;
+        }
+
+        .expense-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .expense-category {
+            font-weight: 500;
+            color: var(--md-sys-color-on-surface);
+        }
+
+        .expense-user {
+            font-size: 14px;
+            color: var(--md-sys-color-on-surface-variant);
+        }
+
+        .expense-amount {
+            font-size: 20px;
+            font-weight: 500;
+            color: var(--md-sys-color-primary);
+            align-self: center;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+        }
+
+        .stat-title {
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--md-sys-color-on-surface-variant);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 400;
+            color: var(--md-sys-color-primary);
+        }
+
+        .category-breakdown {
+            margin-top: 24px;
+        }
+
+        .category-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--md-sys-color-surface-variant);
+        }
+
+        .category-name {
+            font-weight: 500;
+            color: var(--md-sys-color-on-surface);
+        }
+
+        .category-amount {
+            font-weight: 500;
+            color: var(--md-sys-color-primary);
+        }
+
+        .chart-container {
+            margin: 24px 0;
+            padding: 20px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+        }
+
+        .chart-title {
+            font-size: 16px;
+            font-weight: 500;
+            margin-bottom: 16px;
+            color: var(--md-sys-color-on-surface);
+        }
+
+        .bar-chart {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .bar-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .bar-label {
+            min-width: 100px;
+            font-size: 14px;
+            color: var(--md-sys-color-on-surface-variant);
+        }
+
+        .bar-wrapper {
+            flex: 1;
+            height: 32px;
+            background: var(--md-sys-color-surface-variant);
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .bar-fill {
+            height: 100%;
+            background: var(--md-sys-color-primary);
+            transition: width 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 8px;
+        }
+
+        .bar-value {
+            color: white;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .trend-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .trend-up {
+            background: #FFEAEA;
+            color: #BA1A1A;
+        }
+
+        .trend-down {
+            background: #E8F5E9;
+            color: #2E7D32;
+        }
+
+        .trend-neutral {
+            background: var(--md-sys-color-surface-variant);
+            color: var(--md-sys-color-on-surface-variant);
+        }
+
+        .user-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .user-card {
+            background: linear-gradient(135deg, var(--md-sys-color-primary-container) 0%, var(--md-sys-color-surface) 100%);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+        }
+
+        .user-name {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--md-sys-color-on-primary-container);
+            margin-bottom: 8px;
+        }
+
+        .user-amount {
+            font-size: 28px;
+            font-weight: 400;
+            color: var(--md-sys-color-on-primary-container);
+        }
+
+        .top-categories {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .top-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            background: var(--md-sys-color-surface);
+            border-radius: 8px;
+            border-left: 4px solid var(--md-sys-color-primary);
+        }
+
+        .top-rank {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--md-sys-color-primary);
+            min-width: 30px;
+        }
+
+        .top-info {
+            flex: 1;
+            margin: 0 12px;
+        }
+
+        .top-category {
+            font-weight: 500;
+            color: var(--md-sys-color-on-surface);
+        }
+
+        .top-amount {
+            font-size: 18px;
+            font-weight: 500;
+            color: var(--md-sys-color-primary);
+        }
+
+        .loading {
+            text-align: center;
+            padding: 24px;
+            color: var(--md-sys-color-on-surface-variant);
+        }
+
+        .snackbar {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background-color: #313033;
+            color: white;
+            padding: 16px 24px;
+            border-radius: 4px;
+            box-shadow: 0 3px 5px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            opacity: 0;
+            transition: all 0.3s;
+            z-index: 1000;
+            max-width: 90%;
+        }
+
+        .snackbar.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .snackbar.error {
+            background-color: var(--md-sys-color-error);
+        }
+
+        .material-icons {
+            font-size: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Gastos Familiares</h1>
+        </div>
+
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('registro')">Registro</button>
+            <button class="tab" onclick="switchTab('historial')">Historial</button>
+            <button class="tab" onclick="switchTab('estadisticas')">Estadísticas</button>
+        </div>
+
+        <!-- TAB: REGISTRO -->
+        <div id="tab-registro" class="tab-content active">
+            <div class="card">
+                <form id="expenseForm">
+                    <div class="form-field">
+                        <label for="userName">¿QUIÉN GASTÓ?</label>
+                        <select id="userName" class="select-field" required>
+                            <option value="">Seleccionar...</option>
+                            <option value="Florencia">Florencia</option>
+                            <option value="Jorge">Jorge</option>
+                        </select>
+                    </div>
+
+                    <div class="form-field">
+                        <label for="amount">MONTO</label>
+                        <input type="number" id="amount" class="text-field" placeholder="0.00" step="0.01" required>
+                    </div>
+
+                    <div class="form-field">
+                        <label for="category">CATEGORÍA</label>
+                        <select id="category" class="select-field" required>
+                            <option value="">Seleccionar categoría...</option>
+                            <option value="Verdulería">Verdulería</option>
+                            <option value="Carnicería">Carnicería</option>
+                            <option value="Patente auto">Patente auto</option>
+                            <option value="Patente moto">Patente moto</option>
+                            <option value="Luz Warnes">Luz Warnes</option>
+                            <option value="Luz JCPaz">Luz JCPaz</option>
+                            <option value="GAS Warnes">GAS Warnes</option>
+                            <option value="GAS JCPaz">GAS JCPaz</option>
+                            <option value="TGI Warnes">TGI Warnes</option>
+                            <option value="TGI JCPaz">TGI JCPaz</option>
+                            <option value="API Warnes">API Warnes</option>
+                            <option value="API JCPaz">API JCPaz</option>
+                            <option value="AGUA Warnes">AGUA Warnes</option>
+                            <option value="AGUA JCPaz">AGUA JCPaz</option>
+                            <option value="Seguro Auto">Seguro Auto</option>
+                            <option value="Seguro Moto">Seguro Moto</option>
+                            <option value="Teléfono">Teléfono</option>
+                            <option value="Cable/Internet">Cable/Internet</option>
+                            <option value="Spotify">Spotify</option>
+                            <option value="Netflix">Netflix</option>
+                            <option value="Mobi">Mobi</option>
+                            <option value="Disney+">Disney+</option>
+                            <option value="Amazon Prime">Amazon Prime</option>
+                            <option value="Paramount">Paramount</option>
+                            <option value="HBO">HBO</option>
+                            <option value="Estacionamiento">Estacionamiento</option>
+                            <option value="URG 4351111">URG 4351111</option>
+                            <option value="Alarmas">Alarmas</option>
+                            <option value="Nafta">Nafta</option>
+                            <option value="Arreglos auto">Arreglos auto</option>
+                            <option value="Cuota Auto">Cuota Auto</option>
+                            <option value="Susana">Susana</option>
+                            <option value="Mariela">Mariela</option>
+                            <option value="La Misión">La Misión</option>
+                            <option value="Club Remeros">Club Remeros</option>
+                            <option value="Club Náutico">Club Náutico</option>
+                            <option value="Regalos">Regalos</option>
+                            <option value="Súper y Almacén">Súper y Almacén</option>
+                            <option value="Farmacia">Farmacia</option>
+                            <option value="Perfumería">Perfumería</option>
+                            <option value="Veterinaria">Veterinaria</option>
+                            <option value="Pinturería">Pinturería</option>
+                            <option value="Ferretería">Ferretería</option>
+                            <option value="Repuestos/Arreglos casa">Repuestos/Arreglos casa</option>
+                            <option value="Arreglos celular">Arreglos celular</option>
+                            <option value="Lavandería">Lavandería</option>
+                            <option value="Lavado de auto">Lavado de auto</option>
+                            <option value="Fumigación">Fumigación</option>
+                            <option value="Jardineros">Jardineros</option>
+                            <option value="Ropa chicos">Ropa chicos</option>
+                            <option value="Viajes">Viajes</option>
+                            <option value="Sabrosana">Sabrosana</option>
+                            <option value="Cuotas La Médica">Cuotas La Médica</option>
+                            <option value="Coop Gurru">Coop Gurru</option>
+                            <option value="Mercería">Mercería</option>
+                            <option value="Travel Rock">Travel Rock</option>
+                            <option value="Telefonía">Telefonía</option>
+                            <option value="Cine">Cine</option>
+                            <option value="Teatro">Teatro</option>
+                            <option value="Profesor particular">Profesor particular</option>
+                            <option value="Inglés">Inglés</option>
+                            <option value="Comidas">Comidas</option>
+                            <option value="Heladería">Heladería</option>
+                            <option value="Otros Gastos">Otros Gastos</option>
+                        </select>
+                    </div>
+
+                    <div class="button-group">
+                        <button type="button" class="button button-secondary" onclick="clearForm()">
+                            <span class="material-icons">clear</span>
+                            Limpiar
+                        </button>
+                        <button type="submit" class="button button-primary">
+                            <span class="material-icons">save</span>
+                            Guardar Gasto
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- TAB: HISTORIAL -->
+        <div id="tab-historial" class="tab-content">
+            <div class="card">
+                <div class="filters">
+                    <div class="filter-field">
+                        <label>USUARIO</label>
+                        <select id="filterUser" class="select-field" onchange="applyFilters()">
+                            <option value="">Todos</option>
+                            <option value="Florencia">Florencia</option>
+                            <option value="Jorge">Jorge</option>
+                        </select>
+                    </div>
+                    <div class="filter-field">
+                        <label>CATEGORÍA</label>
+                        <select id="filterCategory" class="select-field" onchange="applyFilters()">
+                            <option value="">Todas</option>
+                        </select>
+                    </div>
+                    <div class="filter-field">
+                        <label>MES</label>
+                        <select id="filterMonth" class="select-field" onchange="applyFilters()">
+                            <option value="">Todos</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div id="expensesList">
+                <div class="loading"><p>No hay gastos registrados</p></div>
+            </div>
+        </div>
+
+        <!-- TAB: ESTADÍSTICAS -->
+        <div id="tab-estadisticas" class="tab-content">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-title">Total Mes Actual</div>
+                    <div class="stat-value" id="totalMonth">$0.00</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-title">Gastos Registrados</div>
+                    <div class="stat-value" id="totalExpenses">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-title">Promedio por Gasto</div>
+                    <div class="stat-value" id="avgExpense">$0.00</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 style="font-size: 20px; font-weight: 500; margin-bottom: 16px;">Gastos por Categoría (Mes Actual)</h2>
+                <div id="categoryBreakdown" class="category-breakdown">
+                    <div class="loading"><p>No hay datos para mostrar</p></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="snackbar" class="snackbar">
+        <span class="material-icons">check_circle</span>
+        <span id="snackbarMessage">Gasto guardado correctamente</span>
+    </div>
+
+    <script>
+        const SHEET_CONFIG = {
+            scriptURL: 'TU_URL_DE_GOOGLE_APPS_SCRIPT_AQUI',
+            sheetURL: 'TU_URL_DE_GOOGLE_SHEETS_AQUI'
+        };
+
+        let expenses = [];
+
+        loadExpenses();
+        populateFilterCategories();
+        populateMonthFilter();
+
+        document.getElementById('expenseForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const expense = {
+                user: document.getElementById('userName').value,
+                amount: parseFloat(document.getElementById('amount').value),
+                category: document.getElementById('category').value,
+                date: new Date().toISOString(),
+                dateFormatted: new Date().toLocaleString('es-AR', {
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                })
+            };
+
+            try {
+                await saveExpense(expense);
+                expenses.unshift(expense);
+                displayExpenses();
+                updateStatistics();
+                clearForm();
+                showSnackbar('¡Gasto guardado correctamente!', false);
+            } catch (error) {
+                console.error('Error:', error);
+                showSnackbar('Error al guardar. Intenta de nuevo.', true);
+            }
+        });
+
+        async function saveExpense(expense) {
+            const localExpenses = JSON.parse(localStorage.getItem('expenses') || '[]');
+            localExpenses.unshift(expense);
+            localStorage.setItem('expenses', JSON.stringify(localExpenses));
+
+            if (SHEET_CONFIG.scriptURL && !SHEET_CONFIG.scriptURL.includes('TU_URL')) {
+                const formData = new FormData();
+                formData.append('user', expense.user);
+                formData.append('amount', expense.amount);
+                formData.append('category', expense.category);
+                formData.append('date', expense.dateFormatted);
+
+                await fetch(SHEET_CONFIG.scriptURL, {
+                    method: 'POST',
+                    body: formData
+                });
+            }
+        }
+
+        function loadExpenses() {
+            expenses = JSON.parse(localStorage.getItem('expenses') || '[]');
+            displayExpenses();
+            updateStatistics();
+        }
+
+        function displayExpenses() {
+            const list = document.getElementById('expensesList');
+            const filtered = getFilteredExpenses();
+            
+            if (filtered.length === 0) {
+                list.innerHTML = '<div class="loading"><p>No hay gastos que mostrar</p></div>';
+                return;
+            }
+
+            list.innerHTML = filtered.map(exp => `
+                <div class="expense-item">
+                    <div class="expense-info">
+                        <div class="expense-category">${exp.category}</div>
+                        <div class="expense-user">${exp.user} • ${exp.dateFormatted}</div>
+                    </div>
+                    <div class="expense-amount">$${exp.amount.toFixed(2)}</div>
+                </div>
+            `).join('');
+        }
+
+        function getFilteredExpenses() {
+            let filtered = [...expenses];
+            
+            const userFilter = document.getElementById('filterUser').value;
+            const categoryFilter = document.getElementById('filterCategory').value;
+            const monthFilter = document.getElementById('filterMonth').value;
+            
+            if (userFilter) {
+                filtered = filtered.filter(e => e.user === userFilter);
+            }
+            
+            if (categoryFilter) {
+                filtered = filtered.filter(e => e.category === categoryFilter);
+            }
+            
+            if (monthFilter) {
+                filtered = filtered.filter(e => {
+                    const expDate = new Date(e.date);
+                    return `${expDate.getFullYear()}-${String(expDate.getMonth() + 1).padStart(2, '0')}` === monthFilter;
+                });
+            }
+            
+            return filtered;
+        }
+
+        function applyFilters() {
+            displayExpenses();
+        }
+
+        function populateFilterCategories() {
+            const select = document.getElementById('filterCategory');
+            const categorySelect = document.getElementById('category');
+            const options = Array.from(categorySelect.options).slice(1);
+            
+            options.forEach(opt => {
+                const option = document.createElement('option');
+                option.value = opt.value;
+                option.textContent = opt.textContent;
+                select.appendChild(option);
+            });
+        }
+
+        function populateMonthFilter() {
+            const select = document.getElementById('filterMonth');
+            const months = new Set();
+            
+            expenses.forEach(exp => {
+                const date = new Date(exp.date);
+                const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+                months.add(monthKey);
+            });
+            
+            Array.from(months).sort().reverse().forEach(month => {
+                const [year, monthNum] = month.split('-');
+                const monthName = new Date(year, parseInt(monthNum) - 1).toLocaleDateString('es-AR', { month: 'long', year: 'numeric' });
+                const option = document.createElement('option');
+                option.value = month;
+                option.textContent = monthName.charAt(0).toUpperCase() + monthName.slice(1);
+                select.appendChild(option);
+            });
+        }
+
+        function updateStatistics() {
+            const now = new Date();
+            const currentMonth = now.getMonth();
+            const currentYear = now.getFullYear();
+            
+            const monthExpenses = expenses.filter(exp => {
+                const expDate = new Date(exp.date);
+                return expDate.getMonth() === currentMonth && expDate.getFullYear() === currentYear;
+            });
+            
+            const totalMonth = monthExpenses.reduce((sum, exp) => sum + exp.amount, 0);
+            const avgExpense = monthExpenses.length > 0 ? totalMonth / monthExpenses.length : 0;
+            
+            document.getElementById('totalMonth').textContent = `$${totalMonth.toFixed(2)}`;
+            document.getElementById('totalExpenses').textContent = expenses.length;
+            document.getElementById('avgExpense').textContent = `$${avgExpense.toFixed(2)}`;
+            
+            const categoryTotals = {};
+            monthExpenses.forEach(exp => {
+                categoryTotals[exp.category] = (categoryTotals[exp.category] || 0) + exp.amount;
+            });
+            
+            const sortedCategories = Object.entries(categoryTotals).sort((a, b) => b[1] - a[1]);
+            
+            const breakdownDiv = document.getElementById('categoryBreakdown');
+            if (sortedCategories.length === 0) {
+                breakdownDiv.innerHTML = '<div class="loading"><p>No hay datos para este mes</p></div>';
+                return;
+            }
+            
+            breakdownDiv.innerHTML = sortedCategories.map(([cat, amount]) => `
+                <div class="category-item">
+                    <div class="category-name">${cat}</div>
+                    <div class="category-amount">$${amount.toFixed(2)}</div>
+                </div>
+            `).join('');
+        }
+
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById(`tab-${tabName}`).classList.add('active');
+            
+            if (tabName === 'estadisticas') {
+                updateStatistics();
+            }
+        }
+
+        function clearForm() {
+            document.getElementById('expenseForm').reset();
+            document.getElementById('userName').focus();
+        }
+
+        function showSnackbar(message, isError = false) {
+            const snackbar = document.getElementById('snackbar');
+            const messageEl = document.getElementById('snackbarMessage');
+            
+            messageEl.textContent = message;
+            snackbar.classList.toggle('error', isError);
+            snackbar.classList.add('show');
+            
+            setTimeout(() => snackbar.classList.remove('show'), 3000);
+        }
+    </script>
+</body>
+</html>
