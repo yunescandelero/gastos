@@ -689,7 +689,7 @@
             localExpenses.unshift(expense);
             localStorage.setItem('expenses', JSON.stringify(localExpenses));
 
-            if (SHEET_CONFIG.scriptURL && !SHEET_CONFIG.scriptURL.includes('https://script.google.com/macros/s/AKfycbxIh4rjhpfxi3lrDOLWOqel1RqZIX3VyaFw1rHuLjn-dirP7J4_J5GrpkYK6GlYmMsv/exec') {
+            if (SHEET_CONFIG.scriptURL && !SHEET_CONFIG.scriptURL.includes('https://docs.google.com/spreadsheets/d/1CV44ZO0Vgwpc4Fy62_JNyi2Cxv21XauzbhvDF9pL7R4/edit?usp=sharing') {
                 const formData = new FormData();
                 formData.append('user', expense.user);
                 formData.append('amount', expense.amount);
