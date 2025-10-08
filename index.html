@@ -640,14 +640,14 @@
         <span class="material-icons">check_circle</span>
         <span id="snackbarMessage">Gasto guardado correctamente</span>
     </div>
-
+    
     <script>
         const SHEET_CONFIG = {
             scriptURL: 'https://script.google.com/macros/s/AKfycbzRnZYbaDOCKsQYh7EpnISmGN9WO8vCw8eGFa8yK5kljuvPELPW4RLDvF9t2vyXgDHlYg/exec',
             sheetURL: 'https://docs.google.com/spreadsheets/d/1CV44ZO0Vgwpc4Fy62_JNyi2Cxv21XauzbhvDF9pL7R4/edit?usp=sharing'
         };
 
-        let expenses = [];
+       let expenses = [];
 
         loadExpenses();
         populateFilterCategories();
@@ -688,7 +688,7 @@
             localExpenses.unshift(expense);
             localStorage.setItem('expenses', JSON.stringify(localExpenses));
 
-            if (SHEET_CONFIG.scriptURL && !SHEET_CONFIG.scriptURL.includes('https://docs.google.com/spreadsheets/d/1CV44ZO0Vgwpc4Fy62_JNyi2Cxv21XauzbhvDF9pL7R4/edit?usp=sharing') {
+            if (SHEET_CONFIG.scriptURL && !SHEET_CONFIG.scriptURL.includes('https://docs.google.com/spreadsheets/d/1CV44ZO0Vgwpc4Fy62_JNyi2Cxv21XauzbhvDF9pL7R4/edit?usp=sharing')) {
                 const formData = new FormData();
                 formData.append('user', expense.user);
                 formData.append('amount', expense.amount);
